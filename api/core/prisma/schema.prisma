@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  lastname  String
+  email     String
+  password  String
+  phone     String
+  cpforcnpj String
+  address   Address[]
+  orders    Order[]
+  avaliations AvaliationOnProduct[]
+
+  @@unique([email, cpforcnpj, phone])
+}
+
+model Address {
+  id              Int     @id @default(autoincrement())
+  Street          String
+  Number          String
+  City            String
+  isMain          Boolean
+  UserMainAddress User?   @relation(fields: [UserId], references: [id])
+  UserId          Int
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String 
+  description String
+  price       Float
+  image       String
+  sku         String
+  categories  CategoriesOnProduct[]
+  orders      ProductOnOrder[]
+  avaliations AvaliationOnProduct[]
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  product     CategoriesOnProduct[]
+}
+
+model CategoriesOnProduct {
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+
+  @@id([productId, categoryId])
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  total       Float
+  status      String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  products    ProductOnOrder[]
+}
+
+model ProductOnOrder {
+  id          Int      @id @default(autoincrement())
+  quantity    Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     Int
+
+  @@unique([productId, orderId])
+}
+
+model AvaliationOnProduct {
+  id          Int      @id @default(autoincrement())
+  rating      Int
+  comment     String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+
+  @@unique([userId, productId])
+}
+
+// enum TypeDiscount {
+//   PERCENT
+//   VALUE
+// }
+
+// model Coupon {
+//   id          Int      @id @default(autoincrement())
+//   code        String
+//   typeDiscount TypeDiscount
+//   valueOrPercent Float
+//   discount    Float
+//   expireAt    DateTime
+//   order      CouponOnOrder
+// }
+
+// model CouponOnOrder {
+//   id Int @id @default(autoincrement())
+//   order       Order    @relation(fields: [orderId], references: [id])
+//   orderId     Int  @unique
+//   coupon      Coupon   @relation(fields: [couponId], references: [id])
+//   couponId    Int  @unique
+// }
