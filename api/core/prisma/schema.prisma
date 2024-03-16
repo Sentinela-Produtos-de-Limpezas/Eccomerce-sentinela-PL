@@ -14,15 +14,15 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  lastname  String
-  email     String
-  password  String
-  phone     String
-  cpforcnpj String
-  address   Address[]
-  orders    Order[]
+  id          Int                   @id @default(autoincrement())
+  name        String
+  lastname    String
+  email       String
+  password    String
+  phone       String
+  cpforcnpj   String
+  address     Address[]
+  orders      Order[]
   avaliations AvaliationOnProduct[]
 
   @@unique([email, cpforcnpj, phone])
@@ -39,8 +39,8 @@ model Address {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String 
+  id          Int                   @id @default(autoincrement())
+  name        String
   description String
   price       Float
   image       String
@@ -51,72 +51,68 @@ model Product {
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   name        String
   description String
   product     CategoriesOnProduct[]
 }
 
 model CategoriesOnProduct {
-  product     Product   @relation(fields: [productId], references: [id])
-  productId   Int
-  category    Category  @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
   @@id([productId, categoryId])
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
-  total       Float
-  status      String
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
-  products    ProductOnOrder[]
+  id       Int              @id @default(autoincrement())
+  total    Float
+  status   String
+  user     User             @relation(fields: [userId], references: [id])
+  userId   Int
+  products ProductOnOrder[]
+  coupon   Coupon?          @relation(fields: [couponId], references: [id])
+  couponId Int
 }
 
 model ProductOnOrder {
-  id          Int      @id @default(autoincrement())
-  quantity    Int
-  product     Product  @relation(fields: [productId], references: [id])
-  productId   Int
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     Int
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
 
   @@unique([productId, orderId])
 }
 
 model AvaliationOnProduct {
-  id          Int      @id @default(autoincrement())
-  rating      Int
-  comment     String
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
-  product     Product  @relation(fields: [productId], references: [id])
-  productId   Int
+  id        Int     @id @default(autoincrement())
+  rating    Int
+  comment   String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
 
   @@unique([userId, productId])
 }
 
-// enum TypeDiscount {
-//   PERCENT
-//   VALUE
-// }
+enum TypeDiscount {
+  PERCENT
+  VALUE
+}
 
-// model Coupon {
-//   id          Int      @id @default(autoincrement())
-//   code        String
-//   typeDiscount TypeDiscount
-//   valueOrPercent Float
-//   discount    Float
-//   expireAt    DateTime
-//   order      CouponOnOrder
-// }
-
-// model CouponOnOrder {
-//   id Int @id @default(autoincrement())
-//   order       Order    @relation(fields: [orderId], references: [id])
-//   orderId     Int  @unique
-//   coupon      Coupon   @relation(fields: [couponId], references: [id])
-//   couponId    Int  @unique
-// }
+model Coupon {
+  id             Int          @id @default(autoincrement())
+  code           String        @unique
+  typeDiscount   TypeDiscount
+  valueOrPercent Float
+  discount       Float
+  expireAt       DateTime
+  used           Boolean       @default(false)
+  reactivated    Boolean       @default(false)
+  order          Order[]
+}
