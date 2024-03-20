@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  errorFormat: "pretty",
+  log: [ "info", "warn"]
+});
 
 async function seed() {
   // Wrap all data creation within a transaction
@@ -116,10 +119,7 @@ async function seed() {
           ],
         },
       },
-    }).catch((e) => {
-      console.error("AQUIIIIIII", e);
-    });
-
+    })
     console.log(`Database seeded with example data using transactions.`);
   });
 }
@@ -127,7 +127,7 @@ async function seed() {
 seed()
   .catch((e) => {
     console.error("Seeding failed!", e);
-    return 1
+    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
