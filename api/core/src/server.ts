@@ -30,26 +30,29 @@ O backend é o "motor" que faz o sistema funcionar.
 });
 
 app.get("/users", async (req: Request, res: Response) => {
-  const u = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      address: {
-        select: {
-          City: true,
-          id: true,
-          isMain: true,
-          Number: true,
-          Street: true,
-          UserId: true,
-        }
-      }
+    try {
+        const u = await prisma.user.findMany({
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              address: {
+                select: {
+                  City: true,
+                  id: true,
+                  isMain: true,
+                  Number: true,
+                  Street: true,
+                  UserId: true,
+                }
+              }
+            }
+        
+          })
+          res.status(200).json(u)
+    } catch (error) {
+        res.status(500).json(error)
     }
-
-  })
-  res.status(200).json(u)
-
 });
 
 
