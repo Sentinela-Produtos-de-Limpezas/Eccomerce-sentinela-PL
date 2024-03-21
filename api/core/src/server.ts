@@ -1,8 +1,9 @@
 import express, { Response, Request } from "express";
-import { PrismaClient } from "@prisma/client";
+
+import  prisma from "../src/model/prisma"
 const app = express();
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 const users: any = prisma.user.findMany().then((users: any) => {
   return users;

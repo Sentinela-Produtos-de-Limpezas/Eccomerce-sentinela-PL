@@ -1,9 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient({
-  errorFormat: "pretty",
-  log: [ "info", "warn"]
-});
+import prisma from '../src/model/prisma';
 
 async function seed() {
   // Wrap all data creation within a transaction
