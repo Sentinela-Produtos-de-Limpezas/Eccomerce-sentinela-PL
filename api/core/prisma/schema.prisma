@@ -5,18 +5,15 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  previewFeatures = ["driverAdapters", "clientExtensions"]
 }
-
 
 datasource db {
   provider = "sqlite"
   url      = "file:dev.db"
 }
-
-
-
 
 model User {
   id          Int                   @id @default(autoincrement())
@@ -111,13 +108,13 @@ model AvaliationOnProduct {
 // }
 
 model Coupon {
-  id             Int          @id @default(autoincrement())
-  code           String        @unique
+  id             Int      @id @default(autoincrement())
+  code           String   @unique
   typeDiscount   String
   valueOrPercent Float
   discount       Float
   expireAt       DateTime
-  used           Boolean       @default(false)
-  reactivated    Boolean       @default(false)
+  used           Boolean  @default(false)
+  reactivated    Boolean  @default(false)
   order          Order[]
 }
