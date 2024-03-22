@@ -1,14 +1,13 @@
 import express, { Response, Request } from "express";
 
+import  prisma from "./model/prisma"
 const app = express();
 
-const users = [
-  { id: 1, name: "Lucas" },
-  { id: 2, name: "Eric" },
-  { id: 3, name: "Ana" },
-];
+// const prisma = new PrismaClient();
 
-
+const users: any = prisma.user.findMany().then((users: any) => {
+  return users;
+});
 app.get("/", function (req: Request, res: Response) {
   res.send(`
   Oi! Essa é a API do sistema Eccomerce da sentinela
@@ -31,14 +30,32 @@ O backend é o "motor" que faz o sistema funcionar.
   `);
 });
 
-app.get("/users", function (req: Request, res: Response) {
-  res.send(users);
+app.get("/users", async (req: Request, res: Response) => {
+    try {
+        const u = await prisma.user.findMany({
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              address: {
+                select: {
+                  City: true,
+                  id: true,
+                  isMain: true,
+                  Number: true,
+                  Street: true,
+                  UserId: true,
+                }
+              }
+            }
+        
+          })
+          res.status(200).json(u)
+    } catch (error) {
+        res.status(500).json(error)
+    }
 });
 
-app.get("/users/:userId", function (req: Request, res: Response) {
-  const user = users.find((user) => user.id === parseInt(req.params.userId));
-  res.send(user);
-});
 
 if (!module.parent) {
   app.listen(3000);
