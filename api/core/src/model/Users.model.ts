@@ -1,5 +1,5 @@
 import prisma from "./prisma"
-import { ScopeValidationUser, userInput, userOutput } from "../types/user/user"
+import { ScopeValidationUser, userInput, userOutput, UserOutputLogin } from "../types/user/user"
 import { BaseError } from "../helpers/BaseError"
 import { Either, left, right } from "@sweet-monads/either"
 import { StatusCode } from "../helpers/controllerStatusCode"
@@ -63,6 +63,23 @@ export const User = {
       });
       if (!existingUser) return left(null)
       return right(existingUser)
+    } catch (error) {
+      return left(new BaseError("Ocorreu um erro inesperado!"))
+    }
+  }, 
+  async login(email: string): Promise<Either<BaseError, UserOutputLogin | null>> {
+    try {
+      const user = await prisma.user.findFirst({
+        where: { email },
+        select: {
+          name: true,
+          email: true,
+          lastname: true,
+          phone: true,
+          password:true
+        }
+      })
+      return right(user)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }

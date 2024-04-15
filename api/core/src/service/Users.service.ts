@@ -3,6 +3,7 @@ import { userInput } from '../types/user/user';
 import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from "../helpers/controllerStatusCode";
 import { comparePassword, hashPassword } from "../helpers/saltPassword";
+import { generateToken } from '../helpers/JsonWebToken';
 
 const UserService = {
   async getAll() {
@@ -99,6 +100,25 @@ const UserService = {
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },
+
+  async login(email: string, password: string) {
+    try {
+      const user = await User.login(email)
+      if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode)
+      if (user.isRight()) {
+        if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
+        const passwordIsValid = await comparePassword(password, user.value.password)
+        console.log("🚀 ~ login ~ passwordIsValid:", passwordIsValid)
+        if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED)
+        return {
+          token: generateToken(user.value)
+        }
+      }
+    } catch (error) {
+      console.log("🚀 ~ login ~ error:", error)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+    }
+  }
 }
 
 export {

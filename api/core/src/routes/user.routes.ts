@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAll, getOne, create, remove, update } from "../controller/User.controller";
+import { getAll, getOne, create, remove, update, login } from "../controller/User.controller";
 import { userMiddleCreated } from '../middleware/userMiddle';
 
 
@@ -10,6 +10,7 @@ usersRouter.get('/', getAll);
 usersRouter.get('/:id', getOne);
 usersRouter.post('/',userMiddleCreated ,create);
 usersRouter.put('/:id', update);
+usersRouter.post('/login', login)
 
 
 

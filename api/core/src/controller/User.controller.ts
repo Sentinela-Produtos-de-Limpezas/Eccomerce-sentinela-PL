@@ -73,12 +73,29 @@ const remove = async (req: Request, res: Response) => {
       message: error.message
     })
   }
+
 }
+const login = async (req: Request, res: Response) => {
+  try {
+    const user = await UserService.login(req.body.email, req.body.password)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    }
+    return res.status(StatusCode.OK).json(user)
+  } catch (error: any) {
+    res.status(error.StatusCode).json({
+      message: error.message
+    })
+  }
+
+}
+
 
 export {
   getAll,
   getOne,
   create,
   update,
-  remove
+  remove,
+  login
 }
