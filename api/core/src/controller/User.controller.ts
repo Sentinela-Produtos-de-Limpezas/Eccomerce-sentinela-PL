@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
-import { StatusCode } from '../helper/controllerStatusCode';
-import { service } from "../service/Users.service";
+import { StatusCode } from '../helpers/controllerStatusCode';
+import { UserService } from "../service/Users.service";
+import { BaseError } from "../helpers/BaseError";
 
 
 const getAll = async (req: Request, res: Response) => {
   try {
-    const users = await service.getAll()
+    const users = await UserService.getAll()
+    if (users instanceof BaseError) {
+      return res.status(users.statusCode).json({ message: users.message })
+    }
     return res.status(StatusCode.OK).json(users)
   } catch (error: any) {
     res.status(error.StatusCode).json({
@@ -16,8 +20,10 @@ const getAll = async (req: Request, res: Response) => {
 
 const getOne = async (req: Request, res: Response) => {
   try {
-    const user = await service.getOne(+req.params.id)
-    return res.status(StatusCode.OK).json(user)
+    const user = await UserService.getOne(+req.params.id)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    } res.status(StatusCode.OK).json(user)
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
@@ -25,11 +31,16 @@ const getOne = async (req: Request, res: Response) => {
   }
 }
 
+
 const create = async (req: Request, res: Response) => {
   try {
-    const user = await service.create(req.body)
+    const user = await UserService.create(req.body)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    }
     return res.status(StatusCode.CREATED).json(user)
   } catch (error: any) {
+
     res.status(error.StatusCode).json({
       message: error.message
     })
@@ -38,7 +49,10 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
-    const user = await service.update(+req.params.id, req.body)
+    const user = await UserService.update(+req.params.id, req.body)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    }
     return res.status(StatusCode.OK).json(user)
   } catch (error: any) {
     res.status(error.StatusCode).json({
@@ -49,14 +63,16 @@ const update = async (req: Request, res: Response) => {
 
 const remove = async (req: Request, res: Response) => {
   try {
-    const user = await service.remove(+req.params.id)
+    const user = await UserService.remove(+req.params.id)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    }
     return res.status(StatusCode.OK).json(user)
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
     })
   }
-
 }
 
 export {
