@@ -8,7 +8,6 @@ interface userOutput {
   cpforcnpj: string
 }
 
-
 interface userInput {
   name: string
   lastname: string
@@ -18,4 +17,10 @@ interface userInput {
   cpforcnpj: string
 }
 
-export { userOutput, userInput }
+
+interface ScopeValidationUser {
+  email: string
+  cpforcnpj: string
+  phone: string
+}
+export { userOutput, userInput, ScopeValidationUser }
