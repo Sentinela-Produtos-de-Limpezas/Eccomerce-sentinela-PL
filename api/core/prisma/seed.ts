@@ -1,4 +1,5 @@
 import prisma from '../src/model/prisma';
+import { hashPassword } from '../src/helpers/saltPassword';
 
 async function seed() {
   // Wrap all data creation within a transaction
@@ -8,7 +9,7 @@ async function seed() {
         name: "John Doe",
         lastname: "Smith",
         email: "john.doe@example.com",
-        password: "hashed_password", // Replace with a secure password hashing mechanism
+        password: hashPassword("hashed_password"), // Replace with a secure password hashing mechanism
         phone: "(123) 456-7890",
         cpforcnpj: "12345678900001",
         address: {
@@ -27,7 +28,7 @@ async function seed() {
         name: "Jane Smith",
         lastname: "Doe",
         email: "jane.smith@example.com",
-        password: "hashed_password", // Replace with a secure password hashing mechanism
+        password: hashPassword("hashed_password"), // Replace with a secure password hashing mechanism
         phone: "(987) 654-3210",
         cpforcnpj: "98765432100002",
         address: {

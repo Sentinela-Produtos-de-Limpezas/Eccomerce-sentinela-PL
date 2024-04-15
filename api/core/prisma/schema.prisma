@@ -1,13 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
+  previewFeatures = ["clientExtensions", "driverAdapters"]
   binaryTargets   = ["native", "rhel-openssl-1.0.x"]
-  previewFeatures = ["driverAdapters", "clientExtensions"]
 }
 
 datasource db {
@@ -24,8 +18,8 @@ model User {
   phone       String
   cpforcnpj   String
   address     Address[]
-  orders      Order[]
   avaliations AvaliationOnProduct[]
+  orders      Order[]
 
   @@unique([email, cpforcnpj, phone])
 }
@@ -36,8 +30,8 @@ model Address {
   Number          String
   City            String
   isMain          Boolean
-  UserMainAddress User?   @relation(fields: [UserId], references: [id])
   UserId          Int
+  UserMainAddress User    @relation(fields: [UserId], references: [id])
 }
 
 model Product {
@@ -47,9 +41,9 @@ model Product {
   price       Float
   image       String
   sku         String
+  avaliations AvaliationOnProduct[]
   categories  CategoriesOnProduct[]
   orders      ProductOnOrder[]
-  avaliations AvaliationOnProduct[]
 }
 
 model Category {
@@ -60,10 +54,10 @@ model Category {
 }
 
 model CategoriesOnProduct {
-  product    Product  @relation(fields: [productId], references: [id])
   productId  Int
-  category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
 
   @@id([productId, categoryId])
 }
@@ -72,20 +66,20 @@ model Order {
   id       Int              @id @default(autoincrement())
   total    Float
   status   String
-  user     User             @relation(fields: [userId], references: [id])
   userId   Int
-  products ProductOnOrder[]
-  coupon   Coupon?          @relation(fields: [couponId], references: [id])
   couponId Int?
+  coupon   Coupon?          @relation(fields: [couponId], references: [id])
+  user     User             @relation(fields: [userId], references: [id])
+  products ProductOnOrder[]
 }
 
 model ProductOnOrder {
   id        Int     @id @default(autoincrement())
   quantity  Int
-  product   Product @relation(fields: [productId], references: [id])
   productId Int
-  order     Order   @relation(fields: [orderId], references: [id])
   orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
   @@unique([productId, orderId])
 }
@@ -94,18 +88,13 @@ model AvaliationOnProduct {
   id        Int     @id @default(autoincrement())
   rating    Int
   comment   String
-  user      User    @relation(fields: [userId], references: [id])
   userId    Int
-  product   Product @relation(fields: [productId], references: [id])
   productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
   @@unique([userId, productId])
 }
-
-// enum TypeDiscount {
-//   PERCENT
-//   VALUE
-// }
 
 model Coupon {
   id             Int      @id @default(autoincrement())
