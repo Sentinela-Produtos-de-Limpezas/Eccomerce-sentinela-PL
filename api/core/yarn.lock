@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
+
+"@hapi/topo@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/topo/-/topo-5.1.0.tgz#dc448e332c6c6e37a4dc02fd84ba8d44b9afb012"
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+
 "@libsql/client@^0.5.6":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@libsql/client/-/client-0.5.6.tgz#897e1cb3f45f625bce2035f41caac1e16b7a8927"
@@ -119,6 +129,34 @@
   resolved "https://registry.yarnpkg.com/@prisma/get-platform/-/get-platform-5.11.0.tgz#19a768127b1712c27f5dec8a0a79a4c9675829eb"
   dependencies:
     "@prisma/debug" "5.11.0"
+
+"@sideway/address@^4.1.5":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.5.tgz#4bc149a0076623ced99ca8208ba780d65a99b9d5"
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+
+"@sideway/formula@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@sideway/formula/-/formula-3.0.1.tgz#80fcbcbaf7ce031e0ef2dd29b1bfc7c3f583611f"
+
+"@sideway/pinpoint@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
+
+"@sweet-monads/either@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@sweet-monads/either/-/either-3.3.1.tgz#79e174a41af925d84f334ac2702fb99fde0c0002"
+  dependencies:
+    "@sweet-monads/interfaces" "^3.3.0"
+
+"@sweet-monads/interfaces@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@sweet-monads/interfaces/-/interfaces-3.3.0.tgz#7ec79b5ec02c513488abb9be268f15dc371c56cd"
+
+"@types/bcryptjs@^2.4.6":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@types/bcryptjs/-/bcryptjs-2.4.6.tgz#2b92e3c2121c66eba3901e64faf8bb922ec291fa"
 
 "@types/body-parser@*":
   version "1.19.5"
@@ -240,6 +278,10 @@ asynckit@^0.4.0:
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
+
+bcryptjs@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
 
 binary-extensions@^2.0.0:
   version "2.3.0"
@@ -585,6 +627,16 @@ is-glob@^4.0.1, is-glob@~4.0.1:
 is-number@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/is-number/-/is-number-7.0.0.tgz#7535345b896734d5f80c4d06c50955527a14f12b"
+
+joi@^17.12.3:
+  version "17.12.3"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.12.3.tgz#944646979cd3b460178547b12ba37aca8482f63d"
+  dependencies:
+    "@hapi/hoek" "^9.3.0"
+    "@hapi/topo" "^5.1.0"
+    "@sideway/address" "^4.1.5"
+    "@sideway/formula" "^3.0.1"
+    "@sideway/pinpoint" "^2.0.0"
 
 js-base64@^3.7.5:
   version "3.7.7"
