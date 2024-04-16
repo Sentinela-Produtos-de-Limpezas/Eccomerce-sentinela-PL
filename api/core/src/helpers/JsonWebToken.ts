@@ -5,7 +5,10 @@ const JWT_SECRET = process.env.JWT_SECRET as string
 
 export const generateToken = (payload: UserOutputLogin) => {
   const { password, ...rest } = payload
-  return jwt.sign(rest, JWT_SECRET, { expiresIn: '10h' })
+  return jwt.sign(rest, JWT_SECRET, {
+    expiresIn: '60m',
+    algorithm: 'HS256',
+  })
 
 }
 
