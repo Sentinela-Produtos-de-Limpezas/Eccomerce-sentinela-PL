@@ -37,13 +37,14 @@ model Address {
 model Product {
   id          Int                   @id @default(autoincrement())
   name        String
-  description String
   price       Float
   image       String
   sku         String
   avaliations AvaliationOnProduct[]
   categories  CategoriesOnProduct[]
   orders      ProductOnOrder[]
+
+  @@unique([sku, name])
 }
 
 model Category {
