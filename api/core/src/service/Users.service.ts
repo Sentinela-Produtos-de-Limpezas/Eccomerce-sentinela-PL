@@ -21,7 +21,6 @@ const UserService = {
       const user = await User.getOne(id)
       if (user.isRight()) {
         if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
-        console.log("🚀 ~ getOne ~ user:", await comparePassword("flaco0x01", user.value.password))
         
         return user.value
       }
