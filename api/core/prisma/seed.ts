@@ -56,68 +56,42 @@ async function seed() {
       },
     });
 
-    const product1 = await tx.product.create({
-      data: {
-        name: "Laptop",
-        description: "A powerful laptop for work and play",
-        price: 1299.99,
-        image: "https://example.com/laptop.jpg",
-        sku: "LAPTOP123",
-        categories: {
-          create: {
-            category: {
-              connect: { id: category1.id },
+    const produtos = [
+      "Limpa Tudo",
+      "Sabão de Lavar Louça",
+      "Detergente para Roupa",
+      "Limpa Piso",
+      "Limpa Vidros",
+      "Desinfetante para Banheiro",
+      "Limpa Forno",
+      "Spray Desinfetante",
+      "Esponja",
+      "Escova de Limpeza",
+      "Mop",
+      "Sacos de Lixo",
+    ];
+
+
+    for (const produtoNome of produtos) {
+      const placeholderImageBase = "https://via.placeholder.com/150"; // URL base para imagem placeholder
+
+      await tx.product.create({
+        data: {
+          name: produtoNome,
+          price: Math.random() * 10 + 5, // Preço aleatório entre R$5 e R$15
+          image: placeholderImageBase,
+          sku: `${produtoNome.replace(/\s/g, "")}123`, // Gera SKU baseado no nome do produto
+          categories: {
+            create: {
+              category: {
+                connect: { id: category1.id },
+              },
             },
           },
         },
-      },
-    });
-
-    const product2 = await tx.product.create({
-      data: {
-        name: "T-Shirt",
-        description: "A comfortable and stylish T-shirt",
-        price: 24.99,
-        image: "https://example.com/tshirt.jpg",
-        sku: "TSHIRT100",
-        categories: {
-          create: {
-            category: {
-              connect: { id: category2.id },
-            },
-          },
-        },
-      },
-    });
-
-    const order1 = await tx.order.create({
-      data: {
-        total: 1324.98,
-        status: "pending",
-        user: { connect: { id: user1.id } },
-
-        products: {
-          create: [
-            { quantity: 1, product: { connect: { id: product1.id } } },
-          ],
-        },
-      },
-    });
-
-    const order2 = await tx.order.create({
-      data: {
-        total: 24.99,
-        status: "completed",
-        user: { connect: { id: user2.id } },
-        products: {
-          create: [
-            { quantity: 1, product: { connect: { id: product2.id } } },
-          ],
-        },
-      },
-    })
-    console.log(`Database seeded with example data using transactions.`);
-  });
+      });
+    }
+  })
 }
 
 seed()
