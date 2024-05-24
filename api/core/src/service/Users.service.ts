@@ -85,7 +85,7 @@ const UserService = {
       if (user.isRight()) return user.value
       return user
     } catch (error) {
-      console.log("🚀 ~ update ~ error:", error)
+      
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },
@@ -107,14 +107,13 @@ const UserService = {
       if (user.isRight()) {
         if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
         const passwordIsValid = await comparePassword(password, user.value.password)
-        console.log("🚀 ~ login ~ passwordIsValid:", passwordIsValid)
+        
         if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED)
         return {
           token: generateToken(user.value)
         }
       }
     } catch (error) {
-      console.log("🚀 ~ login ~ error:", error)
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   }
