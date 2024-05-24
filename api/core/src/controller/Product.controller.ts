@@ -47,6 +47,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   try {
     const product = await ProductServices.update(+req.params.id, req.body)
+    if(product instanceof BaseError) return res.status(product.statusCode).json({ message: product.message })
     return res.status(StatusCode.OK).json(product)
   } catch (error: any) {
     res.status(error.StatusCode).json({
@@ -58,7 +59,8 @@ export const update = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   try {
     const product = await ProductServices.remove(+req.params.id)
-    return res.status(StatusCode.OK).json(product)
+    if(product instanceof BaseError) return res.status(product.statusCode).json({ message: product.message })
+    if(product) return res.status(StatusCode.OK).json({ message: 'Produto deletado com sucesso!'})
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message

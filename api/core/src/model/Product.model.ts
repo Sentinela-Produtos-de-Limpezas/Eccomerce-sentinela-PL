@@ -1,7 +1,9 @@
-import { productInput, productOutput, productUpdate } from "../types/products/product"
+import { productInput, productOutput, productUpdate, ScopeValidationProduct } from "../types/products/product"
 import prisma from "./prisma"
 import { Either, left, right } from '@sweet-monads/either';
 import { BaseError } from '../helpers/BaseError';
+import { StatusCode } from "../helpers/controllerStatusCode";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 
 export const Product = {
@@ -35,27 +37,39 @@ export const Product = {
   async update(id: number, productDate: productUpdate): Promise<Either<BaseError, productOutput>> {
     try {
       const product = await prisma.product.update({ where: { id }, data: productDate })
-
       return right(product)
     } catch (error) {
+      if(error instanceof PrismaClientKnownRequestError) {
+        return  error.code === 'SQLITE_CONSTRAINT' ?  left(new BaseError("Não foi possível atualizar o produto. O SKU e o nome devem ser únicos. Verifique se o novo SKU e nome já estão cadastrados para outro produto.", StatusCode.NOT_FOUND)) : left(new BaseError("Não foi possível atualizar o Produto!", StatusCode.BAD_REQUEST))
+      }
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
 
   async delete(id: number): Promise<Either<BaseError, boolean>> {
     try {
-      await prisma.product.delete({ where: { id } })
+       await prisma.product.delete({ 
+        where: {id},
+       }
+       )
       return right(true)
     } catch (error) {
-      return left(new BaseError("Ocorreu um erro inesperado!"))
-    }
+      if(error instanceof PrismaClientKnownRequestError) {
+      return  error.code === 'P2025' ?  left(new BaseError("Produto não encontrado!", StatusCode.NOT_FOUND)) : left(new BaseError("Não foi possível deletar o Produto!", StatusCode.BAD_REQUEST))
+  
+      }
+      return left(new BaseError("Não foi possível deletar o Produto!", StatusCode.BAD_REQUEST))    }
   }, 
 
-  async findValidationCreateProduct(name: string, ): Promise<Either<false | BaseError, true>> {
+
+  async findValidationCreateProduct(scope:ScopeValidationProduct ): Promise<Either<false | BaseError, true>> {
     try {
       const existingProduct = await prisma.product.findFirst({
         where: {
-          name
+          OR: [
+            {name: scope.name},
+            {sku: scope.sku},
+          ]
         }
       })
 
@@ -68,5 +82,4 @@ export const Product = {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   }
-
 }

@@ -21,4 +21,8 @@ export type productOutput = {
   sku: string
 }
 
+export interface ScopeValidationProduct {
+  name?: string
+  sku?: string
+}
 export type productBody = Omit<productInput, "description">

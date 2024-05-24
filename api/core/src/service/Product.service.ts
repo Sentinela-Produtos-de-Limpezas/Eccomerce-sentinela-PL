@@ -1,7 +1,7 @@
 import { Product } from '../model/Product.model';
 import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from '../helpers/controllerStatusCode';
-import { productInput } from '../types/products/product';
+import { productInput, productUpdate } from '../types/products/product';
 import { getObject } from '../helpers/FileBase';
 // import {} from ""
 
@@ -30,7 +30,11 @@ export const ProductServices = {
   },
   async create(productDate: productInput, nameFile: string) {
     try {
-      const existProduct = await Product.findValidationCreateProduct(productDate.name)
+      const existProduct = await Product.findValidationCreateProduct({
+        name: productDate.name,
+        sku: productDate.sku
+      
+      })
 
       const fileUrl = await getObject(nameFile)
 
@@ -53,17 +57,47 @@ export const ProductServices = {
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },
-  async update(id: number, productDate: any) {
+  async update(id: number, productDate: productUpdate) {
     try {
-      return await Product.update(id, productDate)
-    } catch (error) {
-      return error
+      const existProductId = await Product.getOne(id)
+      if (existProductId.isLeft()) return new BaseError(existProductId.value.message, existProductId.value.statusCode)
+        if (existProductId.isRight()) {
+          if (existProductId.value === null) return new BaseError("Produto não encontrado !", StatusCode.NOT_FOUND)
+          }
+        
+        const existProduct = await Product.findValidationCreateProduct({
+          name: productDate.name || "",
+          sku: productDate.sku || ""
+        })
+        if (existProduct.isRight()) {
+          const product = await Product.getOne(id)
+          if (product.isLeft()) return new BaseError(product.value.message, product.value.statusCode)
+          if (product.isRight()) {
+            if (product.value === null) return new BaseError("Produto não encontrado !", StatusCode.NOT_FOUND)
+          }
+        }
+        const productUpdate = await Product.update(id, {
+          ...productDate,
+          price: productDate.price ? +productDate.price : undefined
+        
+        })
+        if (productUpdate.isLeft()) return new BaseError(productUpdate.value.message, productUpdate.value.statusCode)
+        if (productUpdate.isRight()) return productUpdate.value
+      } catch (error) {
+        return error
     }
   },
 
+  //falta fazer o update e o remove
+  // o update da imagem é diferente da atualização do produto
+
   async remove(id: number) {
     try {
-      return await Product.delete(id)
+      const product = await Product.delete(id)
+      if (product.isLeft()) return new BaseError(product.value.message, product.value.statusCode)
+      if (product.isRight()) {
+        return product.value
+      }
     } catch (error) {
       return error
     }
