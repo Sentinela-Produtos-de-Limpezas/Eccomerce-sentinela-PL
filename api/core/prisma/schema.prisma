@@ -52,13 +52,15 @@ model Category {
   name        String
   description String
   product     CategoriesOnProduct[]
+
+  @@unique([name])
 }
 
 model CategoriesOnProduct {
   productId  Int
   categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id])
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id])
 
   @@id([productId, categoryId])
 }
@@ -69,8 +71,8 @@ model Order {
   status   String
   userId   Int
   couponId Int?
-  coupon   Coupon?          @relation(fields: [couponId], references: [id])
   user     User             @relation(fields: [userId], references: [id])
+  coupon   Coupon?          @relation(fields: [couponId], references: [id])
   products ProductOnOrder[]
 }
 
@@ -79,8 +81,8 @@ model ProductOnOrder {
   quantity  Int
   productId Int
   orderId   Int
-  order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id])
 
   @@unique([productId, orderId])
 }
@@ -91,8 +93,8 @@ model AvaliationOnProduct {
   comment   String
   userId    Int
   productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user      User    @relation(fields: [userId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
@@ -100,7 +102,7 @@ model AvaliationOnProduct {
 model Coupon {
   id             Int      @id @default(autoincrement())
   code           String   @unique
-  typeDiscount   String
+  typeDiscount   String // 
   valueOrPercent Float
   discount       Float
   expireAt       DateTime
