@@ -1,123 +1,235 @@
 import prisma from '../src/model/prisma';
+import { hashPassword } from '../src/helpers/saltPassword';
+import { fakerPT_BR as faker } from '@faker-js/faker';
+import { userInput } from '../src/types/user/user';
+import { productInput } from '../src/types/products/product';
+
 
 async function seed() {
-  // Wrap all data creation within a transaction
+
+  const Categories = [
+    { name: "Eletrônicos", description: "Aparelhos eletrônicos" },
+    { name: "Roupas", description: "Itens de vestuário" },
+    { name: "Livros", description: "Literatura e leitura" },
+  ]
+
+  const Users: userInput[] = [
+    {
+      name: "Lucas",
+      lastname: "Bispo Menezes",
+      email: "teste@teste.com",
+      password: hashPassword("teste123456"),
+      phone: faker.phone.number(),
+      cpforcnpj: `${faker.number.int({ min: 10000000000, max: 99999999999 })}`,
+    },
+    {
+      name: faker.person.firstName(),
+      lastname: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: hashPassword(faker.internet.password()),
+      phone: faker.phone.number(),
+      cpforcnpj: `${faker.number.int({ min: 10000000000, max: 99999999999 })}`,
+    },
+    {
+      name: faker.person.firstName(),
+      lastname: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: hashPassword(faker.internet.password()),
+      phone: faker.phone.number(),
+      cpforcnpj: `${faker.number.int({ min: 10000000000, max: 99999999999 })}`,
+    },
+    {
+      name: faker.person.firstName(),
+      lastname: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: hashPassword(faker.internet.password()),
+      phone: faker.phone.number(),
+      cpforcnpj: `${faker.number.int({ min: 10000000000, max: 99999999999 })}`,
+    }
+  ]
+
+  const produtos: productInput[] = [
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    }
+  ]
+
+
   await prisma.$transaction(async (tx) => {
-    const user1 = await tx.user.create({
-      data: {
-        name: "John Doe",
-        lastname: "Smith",
-        email: "john.doe@example.com",
-        password: "hashed_password", // Replace with a secure password hashing mechanism
-        phone: "(123) 456-7890",
-        cpforcnpj: "12345678900001",
-        address: {
-          create: {
-            Street: "123 Main St",
-            Number: "10",
-            City: "Anytown",
-            isMain: true,
-          },
+
+
+    for (const category of Categories) {
+      await tx.category.create({
+        data: {
+          name: category.name,
+          description: category.description,
+        }
+      })
+    }
+
+    for (const user of Users) {
+      await tx.user.create({
+        data: {
+          name: user.name,
+          lastname: user.lastname,
+          email: user.email,
+          password: user.password,
+          phone: user.phone,
+          cpforcnpj: user.cpforcnpj,
+          address: {
+            create: {
+              Street: faker.location.street(),
+              Number: faker.location.buildingNumber(),
+              City: faker.location.city(),
+              isMain: true,
+            }
+          }
         },
-      },
-    });
+      })
+    }
 
-    const user2 = await tx.user.create({
-      data: {
-        name: "Jane Smith",
-        lastname: "Doe",
-        email: "jane.smith@example.com",
-        password: "hashed_password", // Replace with a secure password hashing mechanism
-        phone: "(987) 654-3210",
-        cpforcnpj: "98765432100002",
-        address: {
-          create: {
-            Street: "456 Elm St",
-            Number: "20",
-            City: "Big City",
-            isMain: true,
-          },
-        },
-      },
-    });
+    for (const produto of produtos) {
+      await tx.product.create({
+        data: {
+          name: produto.name,
+          price: produto.price,
+          image: produto.image,
+          sku: produto.sku,
+          categories: {
+            create: [
+              {
+                category: {
+                  connect: {
+                    id: [1, 2, 3.4][Math.floor(Math.random() * 3)],
 
-    const category1 = await tx.category.create({
-      data: {
-        name: "Electronics",
-        description: "Electronic devices",
-      },
-    });
-
-    const category2 = await tx.category.create({
-      data: {
-        name: "Clothing",
-        description: "Clothing items",
-      },
-    });
-
-    const product1 = await tx.product.create({
-      data: {
-        name: "Laptop",
-        description: "A powerful laptop for work and play",
-        price: 1299.99,
-        image: "https://example.com/laptop.jpg",
-        sku: "LAPTOP123",
-        categories: {
-          create: {
-            category: {
-              connect: { id: category1.id },
-            },
-          },
-        },
-      },
-    });
-
-    const product2 = await tx.product.create({
-      data: {
-        name: "T-Shirt",
-        description: "A comfortable and stylish T-shirt",
-        price: 24.99,
-        image: "https://example.com/tshirt.jpg",
-        sku: "TSHIRT100",
-        categories: {
-          create: {
-            category: {
-              connect: { id: category2.id },
-            },
-          },
-        },
-      },
-    });
-
-    const order1 = await tx.order.create({
-      data: {
-        total: 1324.98,
-        status: "pending",
-        user: { connect: { id: user1.id } },
-
-        products: {
-          create: [
-            { quantity: 1, product: { connect: { id: product1.id } } },
-          ],
-        },
-      },
-    });
-
-    const order2 = await tx.order.create({
-      data: {
-        total: 24.99,
-        status: "completed",
-        user: { connect: { id: user2.id } },
-        products: {
-          create: [
-            { quantity: 1, product: { connect: { id: product2.id } } },
-          ],
-        },
-      },
-    })
-    console.log(`Database seeded with example data using transactions.`);
-  });
+                  }
+                }
+              }
+            ]
+          }
+        }
+      })
+    }
+  })
 }
+
 
 seed()
   .catch((e) => {
