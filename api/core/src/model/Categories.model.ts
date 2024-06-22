@@ -3,6 +3,20 @@ import { Either, left, right } from "@sweet-monads/either"
 import prisma from "./prisma"
 import { StatusCode } from "../helpers/controllerStatusCode"
 
+type categoriesOutput = {
+  name: string
+
+}
+
+type categoriesInput = {
+  name: string
+}
+
+type categoriesUpdate = {
+  name: string
+}
+
+
 export const Categories = {
   async get(): Promise<Either<BaseError, categoriesOutput[]>> {
     try {
@@ -21,14 +35,14 @@ export const Categories = {
     }
   }, 
 
-  async create(data: categoriesInput): Promise<Either<BaseError, categoriesOutput>> {
-    try {
-      const newCategory = await prisma.category.create({ data });
-      return right(newCategory);
-    } catch (error) {
-      return left(new BaseError("Ocorreu um erro inesperado!"))
-    }
-  },
+  // async create(data: categoriesInput): Promise<Either<BaseError, categoriesOutput>> {
+  //   try {
+  //     const newCategory = await prisma.category.create({ data });
+  //     return right(newCategory);
+  //   } catch (error) {
+  //     return left(new BaseError("Ocorreu um erro inesperado!"))
+  //   }
+  // },
 
   async update(id: number, data: categoriesUpdate): Promise<Either<BaseError, categoriesOutput>> {
     try {

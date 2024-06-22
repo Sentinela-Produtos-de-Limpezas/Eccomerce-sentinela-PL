@@ -4,15 +4,8 @@ import { Request, Response, NextFunction } from 'express';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers.authorization;
-    if (!token || !token.startsWith('Bearer ')) {
-      return res.status(StatusCode.UNAUTHORIZED).json({
-        message: "Formato inválido do cabeçalho de autorização. Utilize 'Bearer <token>'"
-      });
-    }
-
-    const bearerToken = token.split(' ')[1]; 
-    const isValid = verifyToken(bearerToken);
+    const token = req.cookies.access_token;
+    const isValid = verifyToken(token);
 
     if (!isValid) {
       return res.status(StatusCode.UNAUTHORIZED).json({

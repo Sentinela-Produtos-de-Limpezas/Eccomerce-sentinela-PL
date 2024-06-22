@@ -38,7 +38,19 @@ const create = async (req: Request, res: Response) => {
     if (user instanceof BaseError) {
       return res.status(user.statusCode).json({ message: user.message })
     }
-    return res.status(StatusCode.CREATED).json(user)
+  
+    const logar = await UserService.login(req.body.email, req.body.password)
+    if (logar instanceof BaseError) {
+      return res.status(logar.statusCode).json({ message: logar.message })
+    }
+    return res.cookie(
+      "access_token",logar?.token as string,
+      {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 60 * 60 * 1000),
+      }
+    ).status(StatusCode.CREATED).json(user)
   } catch (error: any) {
 
     res.status(error.StatusCode).json({
@@ -75,13 +87,34 @@ const remove = async (req: Request, res: Response) => {
   }
 
 }
+
 const login = async (req: Request, res: Response) => {
   try {
     const user = await UserService.login(req.body.email, req.body.password)
     if (user instanceof BaseError) {
       return res.status(user.statusCode).json({ message: user.message })
     }
-    return res.status(StatusCode.OK).json(user)
+    return res.cookie(
+      "access_token",
+      user?.token as string,
+      {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 60 * 60 * 1000),
+      }
+    ).status(StatusCode.OK).json(user)
+  } catch (error: any) {
+    res.status(error.StatusCode).json({
+      message: error.message
+    })
+  }
+}
+
+
+const logout = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("access_token")
+    return res.status(StatusCode.OK).json({ message: "Deslogado com sucesso!" })
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
@@ -90,12 +123,12 @@ const login = async (req: Request, res: Response) => {
 
 }
 
-
 export {
   getAll,
   getOne,
   create,
   update,
   remove,
-  login
+  login,
+  logout
 }
