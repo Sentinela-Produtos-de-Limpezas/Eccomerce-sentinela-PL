@@ -4,9 +4,9 @@ import { Router } from 'express';
 import { S3 } from '../helpers/FileBase';
 import { getAll, getOne, create, remove, update } from "../controller/Product.controller";
 import { createMiddleProduct } from '../middleware/createMiddleProduct';
+import { authMiddleware } from '../middleware/authMiddle';
 
 
-// ja envia o arquivo para o bucket atraves do multer
 const upload = multer({
   storage: multerS3({
     s3: S3,
@@ -24,8 +24,8 @@ const productRouter = Router();
 
 productRouter.get('/', getAll);
 productRouter.get('/:id', getOne);
-productRouter.post('/', upload.single('file'),createMiddleProduct, create);
-productRouter.put('/:id', update);
-productRouter.delete('/:id', remove);
+productRouter.post('/',authMiddleware, upload.single('file'),createMiddleProduct, create);
+productRouter.put('/:id', authMiddleware, update);
+productRouter.delete('/:id',authMiddleware, remove);
 
 export default productRouter;
