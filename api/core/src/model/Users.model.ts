@@ -5,35 +5,72 @@ import { Either, left, right } from "@sweet-monads/either"
 import { StatusCode } from "../helpers/controllerStatusCode"
 
 export const User = {
-  async get(): Promise<Either<BaseError, userOutput[]>> {
+  async get(): Promise<Either<BaseError,Omit<userOutput, "password">[]>> {
     try {
-      const users = await prisma.user.findMany()
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          cpforcnpj: true,
+        }
+      })
       return right(users)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
 
-  async getOne(id: number): Promise<Either<BaseError, userOutput | null>> {
+  async getOne(id: number): Promise<Either<BaseError, Omit<userOutput, "password"> | null>> {
     try {
-      const user = await prisma.user.findUnique({ where: { id } })
+      const user = await prisma.user.findUnique({ where: { id },
+      select:{
+        id: true,
+        name: true,
+        lastname: true,
+        email: true,
+        phone: true,
+        cpforcnpj: true,
+      } })
       return right(user)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
 
-  async create(data: userInput): Promise<Either<BaseError, userOutput>> {
+  async create(data: userInput): Promise<Either<BaseError, Omit<userOutput, "password">>> {
     try {
-      const newUser = await prisma.user.create({ data });
+      const newUser = await prisma.user.create({ select:{
+        id: true,
+        name: true,
+        lastname: true,
+        email: true,
+        phone: true,
+        cpforcnpj: true,
+      }, data: {
+        ...data
+      
+      } }, 
+
+      );
       return right(newUser);
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
-  async update(id: number, data: userInput): Promise<Either<BaseError, userOutput>> {
+  async update(id: number, data: userInput): Promise<Either<BaseError, Omit<userOutput, "password">>> {
     try {
-      const updatedUser = await prisma.user.update({ where: { id }, data })
+      const updatedUser = await prisma.user.update({ where: { id }, select:{
+        id: true,
+        name: true,
+        lastname: true,
+        email: true,
+        phone: true,
+        cpforcnpj: true,
+      }, data
+      } );
   
       return right(updatedUser)
     } catch (error) {
