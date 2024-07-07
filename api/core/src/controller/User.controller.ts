@@ -38,19 +38,22 @@ const create = async (req: Request, res: Response) => {
     if (user instanceof BaseError) {
       return res.status(user.statusCode).json({ message: user.message })
     }
-  
-    const logar = await UserService.login(req.body.email, req.body.password)
-    if (logar instanceof BaseError) {
-      return res.status(logar.statusCode).json({ message: logar.message })
+
+    const verified_Account = await UserService.login(req.body.email, req.body.password)
+    if (verified_Account instanceof BaseError) {
+      return res.status(verified_Account.statusCode).json({ message: verified_Account.message })
     }
     return res.cookie(
-      "access_token",logar?.token as string,
+      "access_token", verified_Account?.token as string,
       {
         httpOnly: true,
         secure: true,
-        expires: new Date(Date.now() + 60 * 60 * 1000),
+        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
       }
-    ).status(StatusCode.CREATED).json(user)
+    ).cookie("verified_Account", true, {
+      secure: true,
+      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+    }).status(StatusCode.CREATED).json(user)
   } catch (error: any) {
 
     res.status(error.StatusCode).json({
@@ -100,9 +103,12 @@ const login = async (req: Request, res: Response) => {
       {
         httpOnly: true,
         secure: true,
-        expires: new Date(Date.now() + 60 * 60 * 1000),
+        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000) //3 dias,
       }
-    ).status(StatusCode.OK).json(user)
+    ).cookie("verified_Account", true, {
+      secure: true,
+      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+    }).status(StatusCode.OK).json(user)
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
