@@ -92,11 +92,9 @@ model AvaliationOnProduct {
   rating    Int
   comment   String
   userId    Int
-  productId Int
+  productId Int   
   user      User    @relation(fields: [userId], references: [id])
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, productId])
 }
 
 model Coupon {
