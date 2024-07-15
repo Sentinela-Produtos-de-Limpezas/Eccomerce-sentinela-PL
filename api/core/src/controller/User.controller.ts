@@ -108,7 +108,11 @@ const login = async (req: Request, res: Response) => {
     ).cookie("verified_Account", true, {
       secure: true,
       expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-    }).status(StatusCode.OK).json(user)
+    }).status(StatusCode.OK).json({
+      id: user?.user.id,
+      name: user?.user.name,
+      lastname: user?.user.lastname,
+    })
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message

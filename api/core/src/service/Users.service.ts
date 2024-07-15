@@ -110,7 +110,8 @@ const UserService = {
         
         if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED)
         return {
-          token: generateToken(user.value)
+          token: generateToken(user.value),
+          user: user.value
         }
       }
     } catch (error) {

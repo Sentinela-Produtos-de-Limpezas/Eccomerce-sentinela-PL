@@ -108,13 +108,6 @@ export const User = {
     try {
       const user = await prisma.user.findFirst({
         where: { email },
-        select: {
-          name: true,
-          email: true,
-          lastname: true,
-          phone: true,
-          password:true
-        }
       })
       return right(user)
     } catch (error) {

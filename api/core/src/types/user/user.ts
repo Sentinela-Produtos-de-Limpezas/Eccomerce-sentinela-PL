@@ -18,6 +18,7 @@ interface userInput {
 }
 
 interface UserOutputLogin {
+  id: number
   name: string
   email: string
   lastname: string
