@@ -92,19 +92,17 @@ model AvaliationOnProduct {
   rating    Int
   comment   String
   userId    Int
-  productId Int   
+  productId Int
   user      User    @relation(fields: [userId], references: [id])
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Coupon {
-  id             Int      @id @default(autoincrement())
-  code           String   @unique
-  typeDiscount   String // 
-  valueOrPercent Float
-  discount       Float
-  expireAt       DateTime
-  used           Boolean  @default(false)
-  reactivated    Boolean  @default(false)
-  order          Order[]
+  id           Int      @id @default(autoincrement())
+  code         String   @unique
+  discount     Float
+  expireAt     DateTime
+  typeDiscount String // percent ou fixed
+  status       Boolean
+  order        Order[]
 }
