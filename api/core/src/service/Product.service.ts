@@ -3,7 +3,6 @@ import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from '../helpers/controllerStatusCode';
 import { productInput, productUpdate } from '../types/products/product';
 import { getObject } from '../helpers/FileBase';
-// import {} from ""
 
 export const ProductServices = {
   async getAll() {
