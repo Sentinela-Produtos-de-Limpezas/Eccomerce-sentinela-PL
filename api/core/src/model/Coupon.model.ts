@@ -14,9 +14,13 @@ export const Coupon = {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
-  async getOne(id: number): Promise<Either<BaseError, couponOutput | null>> {
+  async getByCode(code: string): Promise<Either<BaseError, couponOutput | null>> {
     try {
-      const coupon = await prisma.coupon.findUnique({ where: { id } })
+      const coupon = await prisma.coupon.findFirst({
+        where: {
+          code
+        }
+      })
       return right(coupon)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))

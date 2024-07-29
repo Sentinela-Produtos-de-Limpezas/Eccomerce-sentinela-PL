@@ -20,8 +20,7 @@ export const getAll = async (_req: Request, res: Response) => {
 
 export const getOne = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id)
-    const coupons = await CouponService.getOne(id)
+    const coupons = await CouponService.getByCode(req.body.code)
     if (coupons instanceof BaseError) {
       return res.status(coupons.statusCode).json({ message: coupons.message })
     }

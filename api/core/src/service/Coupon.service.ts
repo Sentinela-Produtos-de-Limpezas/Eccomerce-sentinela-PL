@@ -15,9 +15,9 @@ export const CouponService = {
     }
   },
 
-  async getOne(id: number) {
+  async getByCode(code: string) {
     try {
-      const coupon = await Coupon.getOne(id)
+      const coupon = await Coupon.getByCode(code)
       if (coupon.isLeft()) return new BaseError(coupon.value.message, coupon.value.statusCode)
       if (coupon.isRight()) {
         if (!coupon.value) return new BaseError("Cupom não encontrado!", StatusCode.NOT_FOUND)
