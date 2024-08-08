@@ -1,3 +1,5 @@
+import { Address } from "../address/address"
+
 interface userOutput {
   id: number
   name: string
@@ -8,6 +10,7 @@ interface userOutput {
   cpforcnpj: string
 }
 
+
 interface userInput {
   name: string
   lastname: string
@@ -16,6 +19,18 @@ interface userInput {
   phone: string
   cpforcnpj: string
 }
+
+
+interface userInputWithAddres {
+  name: string
+  lastname: string
+  email: string
+  password: string
+  phone: string
+  cpforcnpj: string
+  address:Address
+}
+
 
 interface UserOutputLogin {
   id: number
@@ -32,4 +47,4 @@ interface ScopeValidationUser {
   cpforcnpj: string
   phone: string
 }
-export { userOutput, userInput, ScopeValidationUser, UserOutputLogin }
+export { userOutput, userInput, ScopeValidationUser, UserOutputLogin, userInputWithAddres }

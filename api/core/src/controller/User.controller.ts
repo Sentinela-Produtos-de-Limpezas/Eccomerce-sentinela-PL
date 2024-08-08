@@ -62,6 +62,36 @@ const create = async (req: Request, res: Response) => {
   }
 }
 
+const createWithAddress = async (req: Request, res: Response) => {
+  try {
+    const user = await UserService.createWithAddress(req.body)
+    console.log("🚀 ~ createWithAddress ~ user:", user)
+    if (user instanceof BaseError) {
+      return res.status(user.statusCode).json({ message: user.message })
+    }
+
+    const verified_Account = await UserService.login(req.body.email, req.body.password)
+    if (verified_Account instanceof BaseError) {
+      return res.status(verified_Account.statusCode).json({ message: verified_Account.message })
+    }
+    return res.cookie(
+      "access_token", verified_Account?.token as string,
+      {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+      }
+    ).cookie("verified_Account", true, {
+      secure: true,
+      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+    }).status(StatusCode.CREATED).json(user)
+  } catch (error: any) {
+    res.status(error.StatusCode).json({
+      message: error.message
+    })
+  }
+}
+
 const update = async (req: Request, res: Response) => {
   try {
     const user = await UserService.update(+req.params.id, req.body)
@@ -140,5 +170,6 @@ export {
   update,
   remove,
   login,
-  logout
+  logout,
+  createWithAddress
 }

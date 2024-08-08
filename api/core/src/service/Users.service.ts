@@ -1,5 +1,5 @@
 import { User } from "../model/Users.model"
-import { userInput } from '../types/user/user';
+import { userInput, userInputWithAddres } from '../types/user/user';
 import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from "../helpers/controllerStatusCode";
 import { comparePassword, hashPassword } from "../helpers/saltPassword";
@@ -57,6 +57,38 @@ const UserService = {
       const user = await User.create(alteredBodyUser)
       return user.value
     } catch (error) {
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+    }
+  },
+
+  async createWithAddress(UserBody: userInputWithAddres) {
+    try {
+
+      const existingUser = await User.findValidationCreateUser({
+        email: UserBody.email,
+        cpforcnpj: UserBody.cpforcnpj,
+        phone: UserBody.phone
+      })
+      if (existingUser.isRight()) {
+        const existingField =
+          existingUser.value.email === UserBody.email
+            ? "email"
+            : existingUser.value.cpforcnpj === UserBody.cpforcnpj
+              ? "CPF/CNPJ"
+              : "phone";
+        return new BaseError(`O ${existingField} já está em uso!`, StatusCode.BAD_REQUEST);
+      }
+
+      const alteredBodyUser = {
+        ...UserBody,
+        password: hashPassword(UserBody.password)
+      }
+
+      const user = await User.createWithAddress(alteredBodyUser)
+      console.log("🚀 ~ createWithAddress ~ user:", user)
+      return user.value
+    } catch (error) {
+      console.log("🚀 ~ createWithAddress ~ error:", error)
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },

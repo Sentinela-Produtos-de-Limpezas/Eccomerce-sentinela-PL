@@ -1,5 +1,5 @@
 import prisma from "./prisma"
-import { ScopeValidationUser, userInput, userOutput, UserOutputLogin } from "../types/user/user"
+import { ScopeValidationUser, userInput, userInputWithAddres, userOutput, UserOutputLogin } from "../types/user/user"
 import { BaseError } from "../helpers/BaseError"
 import { Either, left, right } from "@sweet-monads/either"
 import { StatusCode } from "../helpers/controllerStatusCode"
@@ -57,6 +57,36 @@ export const User = {
       );
       return right(newUser);
     } catch (error) {
+      return left(new BaseError("Ocorreu um erro inesperado!"))
+    }
+  },
+
+  async createWithAddress(data: userInputWithAddres): Promise<Either<BaseError, Omit<userOutput, "password">>> {
+    try {
+      const newUser = await prisma.user.create({
+        select:{
+        id: true,
+        name: true,
+        lastname: true,
+        email: true,
+        phone: true,
+        cpforcnpj: true,
+      }, data: {
+        ...data,
+      address: {
+        create: {
+          Street: data.address.street,
+          Number: data.address.number,
+          City: data.address.city,
+          isMain: data.address.isMain,
+        }
+      }
+      } }, 
+      );
+      console.log("🚀 ~ createWithAddress ~ newUser:", newUser)
+      return right(newUser);
+    } catch (error) {
+      console.log("🚀 ~ createWithAddress ~ error:", error)
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
