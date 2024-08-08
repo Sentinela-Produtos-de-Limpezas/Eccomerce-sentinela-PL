@@ -7,7 +7,7 @@ import { authMiddleware } from '../middleware/authMiddle';
 const couponRoutes = Router()
 
 couponRoutes.get('/',authMiddleware ,getAll)
-couponRoutes.get('/code', getOne)
+couponRoutes.post('/code', getOne)
 couponRoutes.post('/', authMiddleware, createMiddleCoupon, create)
 couponRoutes.put('/:id', authMiddleware, update)
 couponRoutes.delete('/:id', authMiddleware, remove)
