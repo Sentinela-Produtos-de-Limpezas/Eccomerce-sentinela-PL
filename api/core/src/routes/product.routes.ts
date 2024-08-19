@@ -10,7 +10,7 @@ import { authMiddleware } from '../middleware/authMiddle';
 const upload = multer({
   storage: multerS3({
     s3: S3,
-    bucket: process.env.AWS_SECRET_BUCKET_NAME as string,
+    bucket: process.env.FILE_STORAGE_AWS_SECRET_BUCKET_NAME as string,
     metadata: (_req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },
@@ -24,8 +24,8 @@ const productRouter = Router();
 
 productRouter.get('/', getAll);
 productRouter.get('/:id', getOne);
-productRouter.post('/',authMiddleware, upload.single('file'),createMiddleProduct, create);
+productRouter.post('/', authMiddleware, upload.single('file'), createMiddleProduct, create);
 productRouter.put('/:id', authMiddleware, update);
-productRouter.delete('/:id',authMiddleware, remove);
+productRouter.delete('/:id', authMiddleware, remove);
 
 export default productRouter;
