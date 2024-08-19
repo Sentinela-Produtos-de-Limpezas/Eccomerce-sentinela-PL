@@ -2,25 +2,33 @@ import { BaseError } from "../helpers/BaseError"
 import { Either, left, right } from "@sweet-monads/either"
 import prisma from "./prisma"
 import { StatusCode } from "../helpers/controllerStatusCode"
+import { productOutput } from "@/types/products/product"
 
 type categoriesOutput = {
-  name: string
-
-}
-
-type categoriesInput = {
+  id: number
   name: string
 }
 
-type categoriesUpdate = {
-  name: string
-}
+// type categoriesInput = {
+//   name: string
+//   description: string
+// }
+
+// type categoriesUpdate = {
+//   name: string
+// }
 
 
 export const Categories = {
   async get(): Promise<Either<BaseError, categoriesOutput[]>> {
     try {
-      const categories = await prisma.category.findMany()
+      const categories = await prisma.category.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: false,
+        }
+      })
       return right(categories)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
@@ -28,12 +36,19 @@ export const Categories = {
   },
   async getOne(id: number): Promise<Either<BaseError, categoriesOutput | null>> {
     try {
-      const category = await prisma.category.findUnique({ where: { id } })
+      const category = await prisma.category.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          description: false,
+        }
+      })
       return right(category)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
-  }, 
+  },
 
   // async create(data: categoriesInput): Promise<Either<BaseError, categoriesOutput>> {
   //   try {
@@ -44,15 +59,15 @@ export const Categories = {
   //   }
   // },
 
-  async update(id: number, data: categoriesUpdate): Promise<Either<BaseError, categoriesOutput>> {
-    try {
-      const updatedCategory = await prisma.category.update({ where: { id }, data })
-  
-      return right(updatedCategory)
-    } catch (error) {
-      return left(new BaseError("Ocorreu um erro inesperado!"))
-    }
-  },
+  // async update(id: number, data: categoriesUpdate): Promise<Either<BaseError, categoriesOutput>> {
+  //   try {
+  //     const updatedCategory = await prisma.category.update({ where: { id }, data })
+
+  //     return right(updatedCategory)
+  //   } catch (error) {
+  //     return left(new BaseError("Ocorreu um erro inesperado!"))
+  //   }
+  // },
 
   async delete(id: number): Promise<Either<BaseError, boolean>> {
     try {

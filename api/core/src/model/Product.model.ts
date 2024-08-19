@@ -12,6 +12,7 @@ export const Product = {
       const products = await prisma.product.findMany({
         include: {
           avaliations: {
+            orderBy: {id:"desc"},
             select: {
               id: true,
               comment: true,
