@@ -10,7 +10,7 @@ import { authMiddleware } from '../middleware/authMiddle';
 const upload = multer({
   storage: multerS3({
     s3: S3,
-    bucket: process.env.FILE_STORAGE_AWS_SECRET_BUCKET_NAME as string,
+    bucket: process.env.FILE_STORAGE_BUCKET_NAME as string,
     metadata: (_req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },

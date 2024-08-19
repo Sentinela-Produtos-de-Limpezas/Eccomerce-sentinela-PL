@@ -6,14 +6,14 @@ export const S3 = new S3Client({
   endpoint: process.env.ENDPOINT,
   region: "us-east-1",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.FILE_STORAGE_AWS_SECRET_ACCESS_KEY as string
+    accessKeyId: process.env.FILE_STORAGE_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.FILE_STORAGE_ACCESS_KEY as string
   }
 })
 
 export const getObject = async (key: string) => {
   const params: GetObjectAclCommandInput = {
-    Bucket: process.env.FILE_STORAGE_AWS_SECRET_BUCKET_NAME as string,
+    Bucket: process.env.FILE_STORAGE_BUCKET_NAME as string,
     Key: key
   }
   try {
@@ -27,7 +27,7 @@ export const getObject = async (key: string) => {
 
 export const deleteObject = async (key: string) => {
   const params: DeleteObjectCommandInput = {
-    Bucket: process.env.FILE_STORAGE_AWS_SECRET_BUCKET_NAME as string,
+    Bucket: process.env.FILE_STORAGE_BUCKET_NAME as string,
     Key: key
   }
   const command = new DeleteObjectCommand(params)
