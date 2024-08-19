@@ -4,9 +4,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const options:cors.CorsOptions = {
+const options: cors.CorsOptions = {
   credentials: true,
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173",
+    "http://bohr.com",
+    "https://bohr.com",
+    "http://sentinelapl.com.br",
+    "https://sentinelapl.com.br"
+  ],
 };
 
 app.use(cookieParser());
