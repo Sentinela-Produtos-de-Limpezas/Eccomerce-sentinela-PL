@@ -79,6 +79,7 @@ export const User = {
           Number: data.address.number,
           City: data.address.city,
           isMain: data.address.isMain,
+          zipCode: data.address.zipCode
         }
       }
       } }, 

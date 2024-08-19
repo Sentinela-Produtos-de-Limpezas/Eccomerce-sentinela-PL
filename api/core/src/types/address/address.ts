@@ -3,5 +3,6 @@ export interface Address  {
   number: string
   city: string
   state: string
+  zipCode: string
   isMain: boolean
 }

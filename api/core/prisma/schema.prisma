@@ -30,6 +30,7 @@ model Address {
   Number          String
   City            String
   isMain          Boolean
+  zipCode         String
   UserId          Int
   UserMainAddress User    @relation(fields: [UserId], references: [id])
 }

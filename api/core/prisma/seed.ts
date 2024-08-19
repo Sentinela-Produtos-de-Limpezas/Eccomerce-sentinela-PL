@@ -168,6 +168,246 @@ async function seed() {
       price: +faker.commerce.price(),
       image: `https://picsum.photos/seed/phone/500/700`,
       sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
+    },
+    {
+      name: faker.commerce.productName(),
+      price: +faker.commerce.price(),
+      image: `https://picsum.photos/seed/phone/500/700`,
+      sku: faker.commerce.isbn()
     }
   ]
 
@@ -198,6 +438,7 @@ async function seed() {
               Street: faker.location.street(),
               Number: faker.location.buildingNumber(),
               City: faker.location.city(),
+              zipCode: faker.location.zipCode(),
               isMain: true,
             }
           }

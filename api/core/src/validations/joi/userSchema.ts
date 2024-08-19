@@ -49,7 +49,7 @@ const userWithAddressSchema = Joi.object<userInputWithAddres>({
   }),
 
   password: Joi.string().required().regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).messages({
-    'password.regex': 'Por favor, informe uma senha válida (8 ou mais caracteres, incluindo letras maiúsculas, minúsculas, números)'
+    'string.pattern.base': 'Por favor, informe uma senha válida (8 ou mais caracteres, incluindo letras maiúsculas, minúsculas, números)'
   }),
 
   cpforcnpj: Joi.string().required().when('type', {
@@ -62,8 +62,8 @@ const userWithAddressSchema = Joi.object<userInputWithAddres>({
   }).messages({
     'required': 'Por favor, informe seu CPF/CNPJ'
   }),
-  phone: Joi.string().required().regex(/^[0-9]{11}$/).messages({
-    'string.pattern.base': 'Por favor, informe um número válido de telefone (11 dígitos)'
+  phone: Joi.string().required().regex(/^\+\d{1,3}\s\d{2}\s\d{5,6}-\d{4}$/).messages({
+    'string.pattern.base': 'Por favor, informe um número válido de telefone (formato: +55 99 999999-9999)'
   }),
 
   address: Joi.object({
@@ -78,6 +78,9 @@ const userWithAddressSchema = Joi.object<userInputWithAddres>({
     }),
     isMain: Joi.boolean().required().messages({
       'any.required': 'Por favor, confirme se este é o endereço principal'
+    }),
+    zipCode: Joi.string().required().messages({
+      "any.required": "Por favor, informe o CEP do endereço"
     })
   })
 });
