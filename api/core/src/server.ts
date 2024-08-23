@@ -6,34 +6,25 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 // Configuração das opções de CORS
+
+const allowedDomains = [
+  "http://localhost:5173",
+  "https://devfrontend.bohr.io",
+  "https://sentinelapl.com.br",
+]
 const corsOptions: cors.CorsOptions = {
   credentials: true,
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "https://devfrontend.bohr.io",
-      "https://sentinelapl.com.br",
-    ];
-
-    // Verifica se a origem da requisição está na lista de origens permitidas
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+  origin:  function (origin, callback) {
+    // bypass the requests with no origin (like curl requests, mobile apps, etc )
+    if (!origin) return callback(null, true);
+ 
+    if (allowedDomains.indexOf(origin) === -1) {
+      var msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
+      return callback(new Error(msg), false);
     }
-  },
-  // Cabeçalhos permitidos
-  allowedHeaders: [
-    "Origin",
-    "X-Requested-With",
-    "Content-Type",
-    "Accept",
-    "Authorization",
-    "X-Custom-Header"
-  ],
-  // Métodos permitidos
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-};
+    return callback(null, true);
+  }
+}
 
 // Middleware para CORS
 app.use(cors(corsOptions));
