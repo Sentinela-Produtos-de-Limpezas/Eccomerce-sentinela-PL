@@ -4,12 +4,24 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const options: cors.CorsOptions = {
+const corsOptions: cors.CorsOptions = {
   credentials: true,
-  origin: "http://localhost:5173"
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://devfrontend.bohr.io",
+      "https://sentinelapl.com.br",
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
 };
 
-app.use(cors(options));
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
