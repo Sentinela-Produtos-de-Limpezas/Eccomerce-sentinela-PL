@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 const options: cors.CorsOptions = {
   credentials: true,
-  origin: "https://devfrontend.bohr.io"
+  origin: "http://localhost:5173"
 };
 
 app.use(cors(options));
