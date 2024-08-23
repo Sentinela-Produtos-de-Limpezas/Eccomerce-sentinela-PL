@@ -8,9 +8,7 @@ const app = express();
 // Configuração das opções de CORS
 
 const allowedDomains = [
-  "http://localhost:5173",
   "https://devfrontend.bohr.io",
-  "https://sentinelapl.com.br",
 ]
 const corsOptions: cors.CorsOptions = {
   credentials: true,
