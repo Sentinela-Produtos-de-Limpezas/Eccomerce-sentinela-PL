@@ -15,6 +15,19 @@ export const getAll = async (req: Request, res: Response) => {
   }
 }
 
+export const getAllByCategory = async (req: Request, res: Response) => {
+  try {
+    const category_name = req.query.category_name
+    const products = await ProductServices.getAllByCategory(category_name as string)
+    if(products instanceof BaseError) return res.status(products.statusCode).json({ message: products.message })
+    return res.status(StatusCode.OK).json(products)
+  } catch (error: any) {
+    res.status(error.StatusCode).json({
+      message: error.message
+    })
+  }
+}
+
 export const getOne = async (req: Request, res: Response) => {
   try {
     const product = await ProductServices.getOne(+req.params.id)

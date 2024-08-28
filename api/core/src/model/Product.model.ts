@@ -12,7 +12,7 @@ export const Product = {
       const products = await prisma.product.findMany({
         include: {
           avaliations: {
-            orderBy: {id:"desc"},
+            orderBy: { id: "desc" },
             select: {
               id: true,
               comment: true,
@@ -34,12 +34,22 @@ export const Product = {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
   },
-  async getByCategory(category_id: number): Promise<Either<BaseError, productOutput[]>> {
+  async getByCategory(category_name: string): Promise<Either<BaseError, productOutput[]>> {
     try {
       const products = await prisma.product.findMany({
+        where:{
+          categories:{
+            some: {
+              category: {
+               name: category_name
+              }
+            }
+          }
+        },
         include: {
+
           avaliations: {
-            orderBy: {id:"desc"},
+            orderBy: { id: "desc" },
             select: {
               id: true,
               comment: true,
@@ -81,7 +91,8 @@ export const Product = {
               }
             }
           }
-        }})
+        }
+      })
       return right(product)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))

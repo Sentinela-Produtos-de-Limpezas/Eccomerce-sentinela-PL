@@ -2,7 +2,7 @@ import multer from 'multer';
 import multerS3 from 'multer-s3';
 import { Router } from 'express';
 import { S3 } from '../helpers/FileBase';
-import { getAll, getOne, create, remove, update } from "../controller/Product.controller";
+import { getAll, getOne, create, remove, update, getAllByCategory } from "../controller/Product.controller";
 import { createMiddleProduct } from '../middleware/createMiddleProduct';
 import { authMiddleware } from '../middleware/authMiddle';
 
@@ -23,6 +23,7 @@ const upload = multer({
 const productRouter = Router();
 
 productRouter.get('/', getAll);
+productRouter.get('/category', getAllByCategory);
 productRouter.get('/:id', getOne);
 productRouter.post('/', authMiddleware, upload.single('file'), createMiddleProduct, create);
 productRouter.put('/:id', authMiddleware, update);

@@ -14,6 +14,16 @@ export const ProductServices = {
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },
+  async getAllByCategory(category_name: string) {
+    try {
+  
+      const products = await Product.getByCategory(category_name)
+      if (products.isLeft()) return new BaseError(products.value.message, products.value.statusCode)
+      if (products.isRight()) return products.value
+    } catch (error) {
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+    }
+  },
   async getOne(id: number) {
     try {
       const product = await Product.getOne(id)

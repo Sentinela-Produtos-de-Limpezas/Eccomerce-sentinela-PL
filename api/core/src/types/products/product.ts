@@ -1,4 +1,5 @@
 export type productInput = {
+  categoryId?: number
   name: string,
   price: number,
   image: string
