@@ -43,21 +43,16 @@ const create = async (req: Request, res: Response) => {
     if (verified_Account instanceof BaseError) {
       return res.status(verified_Account.statusCode).json({ message: verified_Account.message })
     }
-    return res.cookie(
-      "access_token", verified_Account?.token as string,
-      {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-      }
-    ).cookie("verified_Account", true, {
+    return res.json({
+      token: verified_Account?.token
+    }).cookie("verified_Account", true, {
       secure: true,
       expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
     }).status(StatusCode.CREATED).json(user)
   } catch (error: any) {
 
     res.status(error.StatusCode).json({
-      message: error.message
+      message: error.message,
     })
   }
 }
