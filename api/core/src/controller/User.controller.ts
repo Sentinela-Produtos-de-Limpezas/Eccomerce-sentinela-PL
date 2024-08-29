@@ -47,6 +47,7 @@ const create = async (req: Request, res: Response) => {
       token: verified_Account?.token
     }).cookie("verified_Account", true, {
       secure: true,
+      sameSite: "none",
       expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
     }).status(StatusCode.CREATED).json(user)
   } catch (error: any) {
