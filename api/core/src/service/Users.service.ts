@@ -3,7 +3,9 @@ import { userInput, userInputWithAddres } from '../types/user/user';
 import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from "../helpers/controllerStatusCode";
 import { comparePassword, hashPassword } from "../helpers/saltPassword";
-import { generateToken } from '../helpers/JsonWebToken';
+import { generateToken, generateRefreshToken } from '../helpers/JsonWebToken';
+import crypto from "crypto"
+import { Redis } from '@upstash/redis'
 
 const UserService = {
   async getAll() {
@@ -21,7 +23,7 @@ const UserService = {
       const user = await User.getOne(id)
       if (user.isRight()) {
         if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
-        
+
         return user.value
       }
       if (user.isLeft()) return new BaseError(user.value.message, StatusCode.INTERNAL_SERVER_ERROR)
@@ -85,7 +87,6 @@ const UserService = {
       }
 
       const user = await User.createWithAddress(alteredBodyUser)
-      console.log("🚀 ~ createWithAddress ~ user:", user)
       return user.value
     } catch (error) {
       console.log("🚀 ~ createWithAddress ~ error:", error)
@@ -117,7 +118,7 @@ const UserService = {
       if (user.isRight()) return user.value
       return user
     } catch (error) {
-      
+
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   },
@@ -134,19 +135,34 @@ const UserService = {
 
   async login(email: string, password: string) {
     try {
+      
+      const redis = new Redis({
+        url: process.env.REDIS_URL,
+        token: process.env.REDIS_TOKEN,
+      })
+
       const user = await User.login(email)
       if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode)
       if (user.isRight()) {
         if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
         const passwordIsValid = await comparePassword(password, user.value.password)
-        
+
         if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED)
+
+        const refreshToken = generateRefreshToken(user.value);
+        if (!refreshToken) return new BaseError("Ocorreu um erro inesperado ao gerar seu token!")
+        const uuid = crypto.randomUUID()
+        const t = await redis.set(uuid, refreshToken, {
+          ex: 60 * 60 * 24 * 7
+        }); // Expira em 7 dias
         return {
           token: generateToken(user.value),
+          session_id: uuid,
           user: user.value
         }
       }
     } catch (error) {
+      console.log("🚀 ~ login ~ error:", error)
       return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
     }
   }

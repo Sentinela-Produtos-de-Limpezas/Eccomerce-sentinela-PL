@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { StatusCode } from '../helpers/controllerStatusCode';
 import { UserService } from "../service/Users.service";
 import { BaseError } from "../helpers/BaseError";
+import { decodeToken, generateToken, verifyRefreshToken } from '../helpers/JsonWebToken';
+import { Redis } from "@upstash/redis";
+import { userOutput } from "@/types/user/user";
 
 
 const getAll = async (req: Request, res: Response) => {
@@ -45,11 +48,7 @@ const create = async (req: Request, res: Response) => {
     }
     return res.json({
       token: verified_Account?.token
-    }).cookie("verified_Account", true, {
-      secure: true,
-      sameSite: "none",
-      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-    }).status(StatusCode.CREATED).json(user)
+    }).json(user)
   } catch (error: any) {
 
     res.status(error.StatusCode).json({
@@ -61,7 +60,7 @@ const create = async (req: Request, res: Response) => {
 const createWithAddress = async (req: Request, res: Response) => {
   try {
     const user = await UserService.createWithAddress(req.body)
-    console.log("🚀 ~ createWithAddress ~ user:", user)
+
     if (user instanceof BaseError) {
       return res.status(user.statusCode).json({ message: user.message })
     }
@@ -70,17 +69,7 @@ const createWithAddress = async (req: Request, res: Response) => {
     if (verified_Account instanceof BaseError) {
       return res.status(verified_Account.statusCode).json({ message: verified_Account.message })
     }
-    return res.cookie(
-      "access_token", verified_Account?.token as string,
-      {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-      }
-    ).cookie("verified_Account", true, {
-      secure: true,
-      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-    }).status(StatusCode.CREATED).json(user)
+    return res.status(StatusCode.CREATED).json(verified_Account)
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
@@ -114,7 +103,6 @@ const remove = async (req: Request, res: Response) => {
       message: error.message
     })
   }
-
 }
 
 const login = async (req: Request, res: Response) => {
@@ -123,22 +111,11 @@ const login = async (req: Request, res: Response) => {
     if (user instanceof BaseError) {
       return res.status(user.statusCode).json({ message: user.message })
     }
-    return res.cookie(
-      "access_token",
-      user?.token as string,
-      {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000) //3 dias,
-      }
-    ).cookie("verified_Account", true, {
-      secure: true,
-      expires: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-    }).status(StatusCode.OK).json({
-      id: user?.user.id,
-      name: user?.user.name,
-      lastname: user?.user.lastname,
-    })
+    return res.json({
+      token: user?.token,
+      user: user?.user,
+      session_id: user?.session_id
+    }).status(StatusCode.CREATED)
   } catch (error: any) {
     res.status(error.StatusCode).json({
       message: error.message
@@ -146,18 +123,70 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
+const redis = new Redis({
+  url: process.env.REDIS_URL as string,
+  token: process.env.REDIS_TOKEN,
+});
 
-const logout = async (req: Request, res: Response) => {
+const refreshToken = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("access_token")
-    return res.status(StatusCode.OK).json({ message: "Deslogado com sucesso!" })
-  } catch (error: any) {
-    res.status(error.StatusCode).json({
-      message: error.message
-    })
-  }
+    const { uuid } = req.body; // Obtém o UUID do corpo da requisição
 
-}
+    if (!uuid) {
+      return res.status(StatusCode.BAD_REQUEST).json({
+        message: "UUID é Requerido!",
+      });
+    }
+
+    // Obtém o refreshToken associado ao UUID
+    const refreshToken = await redis.get(uuid);
+
+    if (!refreshToken) {
+      return res.status(StatusCode.UNAUTHORIZED).json({
+        message: "UUID inválido ou expirado",
+      });
+    }
+
+    // Verifica a validade do refreshToken
+    try {
+      const isValid = verifyRefreshToken(refreshToken as string);
+
+      if (!isValid) {
+        await redis.del(uuid);
+        return res.status(StatusCode.UNAUTHORIZED).json({
+          message: "refreshToken expirado!",
+        });
+      }
+
+      // Decodifica o token para obter informações do usuário
+      const user = decodeToken(refreshToken as string) as userOutput;
+      const newAccessToken = generateToken({
+        id: user.id,
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+        password: user.password,
+        phone: user.phone
+      });
+
+      return res.json({
+        access_token: newAccessToken,
+        user: user,
+      });
+
+    } catch (error) {
+      await redis.del(uuid);
+      return res.status(StatusCode.UNAUTHORIZED).json({
+        message: "refreshToken inválido!",
+      });
+    }
+  } catch (error: any) {
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      message: error.message,
+    });
+  }
+};
+
 
 export {
   getAll,
@@ -166,6 +195,6 @@ export {
   update,
   remove,
   login,
-  logout,
+  refreshToken,
   createWithAddress
 }
