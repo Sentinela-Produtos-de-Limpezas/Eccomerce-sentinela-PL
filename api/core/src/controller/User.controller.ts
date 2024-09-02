@@ -7,7 +7,7 @@ import Redis from "ioredis";  // Importa ioredis
 import { userOutput } from "@/types/user/user";
 
 // Configura a instância do ioredis
-const redis = new Redis(process.env.REDIS_URL as string);
+const redis = new Redis(`rrediss://default::${process.env.REDIS_TOKEN}@${process.env.REDIS_USER}:${process.env.REDIS_PORT}`)
 
 // Define os métodos do controlador
 

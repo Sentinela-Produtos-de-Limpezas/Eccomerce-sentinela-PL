@@ -7,11 +7,7 @@ import { generateToken, generateRefreshToken } from '../helpers/JsonWebToken';
 import crypto from "crypto";
 import Redis from 'ioredis'; // Import ioredis
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD,
-});
+const redis = new Redis(`rediss://default:${process.env.REDIS_TOKEN}@${process.env.REDIS_USER}:${process.env.REDIS_PORT}`)
 
 const UserService = {
   async getAll() {
