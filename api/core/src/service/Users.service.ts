@@ -4,43 +4,48 @@ import { BaseError } from '../helpers/BaseError';
 import { StatusCode } from "../helpers/controllerStatusCode";
 import { comparePassword, hashPassword } from "../helpers/saltPassword";
 import { generateToken, generateRefreshToken } from '../helpers/JsonWebToken';
-import crypto from "crypto"
-import { Redis } from '@upstash/redis'
+import crypto from "crypto";
+import Redis from 'ioredis'; // Import ioredis
+
+const redis = new Redis({
+  host: process.env.REDIS_HOST,
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  password: process.env.REDIS_PASSWORD,
+});
 
 const UserService = {
   async getAll() {
     try {
-      const users = await User.get()
-      if (users.isLeft()) return new BaseError(users.value.message, users.value.statusCode)
-      if (users.isRight()) return users.value
+      const users = await User.get();
+      if (users.isLeft()) return new BaseError(users.value.message, users.value.statusCode);
+      if (users.isRight()) return users.value;
     } catch (error) {
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async getOne(id: number) {
     try {
-      const user = await User.getOne(id)
+      const user = await User.getOne(id);
       if (user.isRight()) {
-        if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
+        if (user.value === null) return new BaseError("Usuário não encontrado!", StatusCode.NOT_FOUND);
 
-        return user.value
+        return user.value;
       }
-      if (user.isLeft()) return new BaseError(user.value.message, StatusCode.INTERNAL_SERVER_ERROR)
-      return user
+      if (user.isLeft()) return new BaseError(user.value.message, StatusCode.INTERNAL_SERVER_ERROR);
+      return user;
     } catch (error) {
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async create(UserBody: userInput) {
     try {
-
       const existingUser = await User.findValidationCreateUser({
         email: UserBody.email,
         cpforcnpj: UserBody.cpforcnpj,
         phone: UserBody.phone
-      })
+      });
       if (existingUser.isRight()) {
         const existingField =
           existingUser.value.email === UserBody.email
@@ -54,23 +59,22 @@ const UserService = {
       const alteredBodyUser = {
         ...UserBody,
         password: hashPassword(UserBody.password)
-      }
+      };
 
-      const user = await User.create(alteredBodyUser)
-      return user.value
+      const user = await User.create(alteredBodyUser);
+      return user.value;
     } catch (error) {
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async createWithAddress(UserBody: userInputWithAddres) {
     try {
-
       const existingUser = await User.findValidationCreateUser({
         email: UserBody.email,
         cpforcnpj: UserBody.cpforcnpj,
         phone: UserBody.phone
-      })
+      });
       if (existingUser.isRight()) {
         const existingField =
           existingUser.value.email === UserBody.email
@@ -84,26 +88,26 @@ const UserService = {
       const alteredBodyUser = {
         ...UserBody,
         password: hashPassword(UserBody.password)
-      }
+      };
 
-      const user = await User.createWithAddress(alteredBodyUser)
-      return user.value
+      const user = await User.createWithAddress(alteredBodyUser);
+      return user.value;
     } catch (error) {
-      console.log("🚀 ~ createWithAddress ~ error:", error)
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      console.log("🚀 ~ createWithAddress ~ error:", error);
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async update(id: number, userBody: userInput) {
     try {
-      const existingUser = await User.getOne(id)
-      if (existingUser.isLeft()) return new BaseError(existingUser.value.message, existingUser.value.statusCode)
-      if (userBody.password) userBody.password = hashPassword(userBody.password)
+      const existingUser = await User.getOne(id);
+      if (existingUser.isLeft()) return new BaseError(existingUser.value.message, existingUser.value.statusCode);
+      if (userBody.password) userBody.password = hashPassword(userBody.password);
       const existingData = await User.findValidationCreateUser({
         email: userBody.email,
         cpforcnpj: userBody.cpforcnpj,
         phone: userBody.phone
-      })
+      });
       if (existingData.isRight()) {
         const existingField =
           existingData.value.email === userBody.email
@@ -113,61 +117,49 @@ const UserService = {
               : "phone";
         return new BaseError(`O ${existingField} já está em uso!`, StatusCode.BAD_REQUEST);
       }
-      const user = await User.update(id, userBody)
-      if (user.isLeft()) throw new BaseError(user.value.message, StatusCode.INTERNAL_SERVER_ERROR)
-      if (user.isRight()) return user.value
-      return user
+      const user = await User.update(id, userBody);
+      if (user.isLeft()) throw new BaseError(user.value.message, StatusCode.INTERNAL_SERVER_ERROR);
+      if (user.isRight()) return user.value;
+      return user;
     } catch (error) {
-
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async remove(id: number) {
     try {
-      const user = await User.delete(id)
-      if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode)
-      return user.value
+      const user = await User.delete(id);
+      if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode);
+      return user.value;
     } catch (error) {
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
   async login(email: string, password: string) {
     try {
-      
-      const redis = new Redis({
-        url: process.env.REDIS_URL,
-        token: process.env.REDIS_TOKEN,
-      })
-
-      const user = await User.login(email)
-      if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode)
+      const user = await User.login(email);
+      if (user.isLeft()) return new BaseError(user.value.message, user.value.statusCode);
       if (user.isRight()) {
-        if (user.value === null) return new BaseError("Usuário não encontrado !", StatusCode.NOT_FOUND)
-        const passwordIsValid = await comparePassword(password, user.value.password)
+        if (user.value === null) return new BaseError("Usuário não encontrado!", StatusCode.NOT_FOUND);
+        const passwordIsValid = await comparePassword(password, user.value.password);
 
-        if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED)
+        if (!passwordIsValid) return new BaseError("Senha inválida!", StatusCode.UNAUTHORIZED);
 
         const refreshToken = generateRefreshToken(user.value);
-        if (!refreshToken) return new BaseError("Ocorreu um erro inesperado ao gerar seu token!")
-        const uuid = crypto.randomUUID()
-        const t = await redis.set(uuid, refreshToken, {
-          ex: 60 * 60 * 24 * 7
-        }); // Expira em 7 dias
+        if (!refreshToken) return new BaseError("Ocorreu um erro inesperado ao gerar seu token!");
+        const uuid = crypto.randomUUID();
+        await redis.set(uuid, refreshToken, "EX", 60 * 60 * 24 * 7); // Expira em 7 dias
         return {
           token: generateToken(user.value),
           session_id: uuid,
           user: user.value
-        }
+        };
       }
     } catch (error) {
-      console.log("🚀 ~ login ~ error:", error)
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR)
+      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
     }
   }
-}
+};
 
-export {
-  UserService
-}
+export { UserService };

@@ -3,9 +3,13 @@ import { StatusCode } from '../helpers/controllerStatusCode';
 import { UserService } from "../service/Users.service";
 import { BaseError } from "../helpers/BaseError";
 import { decodeToken, generateToken, verifyRefreshToken } from '../helpers/JsonWebToken';
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";  // Importa ioredis
 import { userOutput } from "@/types/user/user";
 
+// Configura a instância do ioredis
+const redis = new Redis(process.env.REDIS_URL as string);
+
+// Define os métodos do controlador
 
 const getAll = async (req: Request, res: Response) => {
   try {
@@ -34,7 +38,6 @@ const getOne = async (req: Request, res: Response) => {
   }
 }
 
-
 const create = async (req: Request, res: Response) => {
   try {
     const user = await UserService.create(req.body)
@@ -50,7 +53,6 @@ const create = async (req: Request, res: Response) => {
       token: verified_Account?.token
     }).json(user)
   } catch (error: any) {
-
     res.status(error.StatusCode).json({
       message: error.message,
     })
@@ -123,11 +125,6 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
-const redis = new Redis({
-  url: process.env.REDIS_URL as string,
-  token: process.env.REDIS_TOKEN,
-});
-
 const refreshToken = async (req: Request, res: Response) => {
   try {
     const { uuid } = req.body; // Obtém o UUID do corpo da requisição
@@ -187,7 +184,7 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-
+// Exporta os controladores
 export {
   getAll,
   getOne,
@@ -197,4 +194,4 @@ export {
   login,
   refreshToken,
   createWithAddress
-}
+};
