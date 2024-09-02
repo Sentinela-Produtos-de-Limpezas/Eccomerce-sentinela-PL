@@ -22,8 +22,8 @@ const upload = multer({
 
 const productRouter = Router();
 
-productRouter.get('/', authMiddleware, getAll);
-productRouter.get('/category', authMiddleware, getAllByCategory);
+productRouter.get('/', getAll);
+productRouter.get('/category', getAllByCategory);
 productRouter.get('/:id', getOne);
 productRouter.post('/', authMiddleware, upload.single('file'), createMiddleProduct, create);
 productRouter.put('/:id', authMiddleware, update);
