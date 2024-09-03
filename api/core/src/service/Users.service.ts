@@ -92,9 +92,9 @@ const UserService = {
 
       const user = await User.createWithAddress(alteredBodyUser);
       return user.value;
-    } catch (error) {
+    } catch (error: any) {
       console.log("🚀 ~ createWithAddress ~ error:", error);
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
+      return new BaseError(`error ${error}`, StatusCode.INTERNAL_SERVER_ERROR);
     }
   },
 
@@ -158,8 +158,8 @@ const UserService = {
           user: user.value
         };
       }
-    } catch (error) {
-      return new BaseError("error", StatusCode.INTERNAL_SERVER_ERROR);
+    } catch (error: any) {
+      return new BaseError(`error  ${error}`, StatusCode.INTERNAL_SERVER_ERROR);
     }
   }
 };
