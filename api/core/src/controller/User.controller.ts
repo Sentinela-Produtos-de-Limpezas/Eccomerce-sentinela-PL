@@ -3,11 +3,15 @@ import { StatusCode } from '../helpers/controllerStatusCode';
 import { UserService } from "../service/Users.service";
 import { BaseError } from "../helpers/BaseError";
 import { decodeToken, generateToken, verifyRefreshToken } from '../helpers/JsonWebToken';
-import Redis from "ioredis";  // Importa ioredis
+import { Redis } from "@upstash/redis";  // Importa ioredis
 import { userOutput } from "@/types/user/user";
 
 // Configura a instância do ioredis
-const redis = new Redis(`rrediss://default::${process.env.REDIS_TOKEN}@${process.env.REDIS_USER}:${process.env.REDIS_PORT}`)
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+
+})
 
 // Define os métodos do controlador
 

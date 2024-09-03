@@ -5,9 +5,13 @@ import { StatusCode } from "../helpers/controllerStatusCode";
 import { comparePassword, hashPassword } from "../helpers/saltPassword";
 import { generateToken, generateRefreshToken } from '../helpers/JsonWebToken';
 import crypto from "crypto";
-import Redis from 'ioredis'; // Import ioredis
+import { Redis } from '@upstash/redis'; // Import ioredis
 
-const redis = new Redis(`rediss://default:${process.env.REDIS_TOKEN}@${process.env.REDIS_USER}:${process.env.REDIS_PORT}`)
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+
+})
 
 const UserService = {
   async getAll() {
@@ -145,7 +149,9 @@ const UserService = {
         const refreshToken = generateRefreshToken(user.value);
         if (!refreshToken) return new BaseError("Ocorreu um erro inesperado ao gerar seu token!");
         const uuid = crypto.randomUUID();
-        await redis.set(uuid, refreshToken, "EX", 60 * 60 * 24 * 7); // Expira em 7 dias
+        await redis.set(uuid, refreshToken, {
+          ex: 60 * 60 * 24 * 7, // 7 dias
+        }); // Expira em 7 dias
         return {
           token: generateToken(user.value),
           session_id: uuid,
