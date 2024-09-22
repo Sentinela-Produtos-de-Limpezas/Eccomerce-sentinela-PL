@@ -16,10 +16,10 @@ export const addressSchema = Joi.object({
     'string.empty': 'O campo cidade não pode estar vazio.',
     'any.required': 'A cidade é obrigatória.'
   }),
-  // isMain: Joi.boolean().required().messages({
-  //   'boolean.base': 'O campo principal deve ser um booleano.',
-  //   'any.required': 'O campo principal é obrigatório.'
-  // }),
+  isMain: Joi.boolean().required().messages({
+    'boolean.base': 'O campo principal deve ser um booleano.',
+    'any.required': 'O campo principal é obrigatório.'
+  }),
   zipCode: Joi.string().required().messages({
     'string.base': 'O CEP deve ser uma string.',
     'string.empty': 'O campo CEP não pode estar vazio.',
@@ -30,5 +30,5 @@ export const addressSchema = Joi.object({
     'number.integer': 'O UserId deve ser um número inteiro.',
     'number.positive': 'O UserId deve ser um número positivo.',
     'any.required': 'O UserId é obrigatório.'
-  })
+  }),
 });

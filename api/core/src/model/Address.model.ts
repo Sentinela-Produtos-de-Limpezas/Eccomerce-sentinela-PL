@@ -61,17 +61,48 @@ export const Address = {
     }
   },
 
-  async delete(id: number): Promise<Either<BaseError, boolean>> {
-    try {
-      await prisma.address.delete({
-        where: { id },
-      });
-      return right(true);
-    } catch (error: any) {
-      if (error.code === 'P2025') {
-        return left(new BaseError("Endereço não encontrado!", StatusCode.NOT_FOUND));
+  
+    async delete(id: number): Promise<Either<BaseError, boolean>> {
+      try {
+        const addressToDelete = await prisma.address.findUnique({
+          where: { id },
+        });
+  
+        if (!addressToDelete) {
+          return left(new BaseError("Endereço não encontrado!", StatusCode.NOT_FOUND));
+        }
+  
+        if (addressToDelete.isMain) {
+          const otherAddresses = await prisma.address.findMany({
+            where: {
+              UserId: addressToDelete.UserId,
+              id: { not: id },
+            },
+          });
+  
+          // Se não houver outro endereço, não permite a exclusão
+          if (otherAddresses.length === 0) {
+            return left(new BaseError("Não é possível deletar o único endereço principal!", StatusCode.BAD_REQUEST));
+          }
+  
+          // Se houver outro endereço, define o próximo como isMain
+          await prisma.address.update({
+            where: { id: otherAddresses[0].id },
+            data: { isMain: true },
+          });
+        }
+  
+        // Deleta o endereço
+        await prisma.address.delete({
+          where: { id },
+        });
+  
+        return right(true);
+      } catch (error: any) {
+        if (error.code === 'P2025') {
+          return left(new BaseError("Endereço não encontrado!", StatusCode.NOT_FOUND));
+        }
+        return left(new BaseError("Não foi possível deletar o endereço!", StatusCode.BAD_REQUEST));
       }
-      return left(new BaseError("Não foi possível deletar o endereço!", StatusCode.BAD_REQUEST));
-    }
-  },
+    },
 };
