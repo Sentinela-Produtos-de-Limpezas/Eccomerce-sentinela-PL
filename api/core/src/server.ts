@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 const allowedOrigins = ["http://localhost:5173"]
 const corsOptions: cors.CorsOptions = {
-  credentials: true,
+  // credentials: true,
   origin: allowedOrigins
 }
 
