@@ -2,6 +2,14 @@ import express, { Response, Request } from "express";
 
 import  prisma from "./model/prisma"
 const app = express();
+<<<<<<< Updated upstream
+=======
+const allowedOrigins = ["http://localhost:5173"]
+const corsOptions: cors.CorsOptions = {
+  credentials: true,
+  origin: allowedOrigins
+}
+>>>>>>> Stashed changes
 
 // const prisma = new PrismaClient();
 
