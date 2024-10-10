@@ -67,13 +67,13 @@ const userWithAddressSchema = Joi.object<userInputWithAddres>({
   }),
 
   address: Joi.object({
-    street: Joi.string().required().messages({
+    Street: Joi.string().required().messages({
       "any.required": "Por favor, informe o endereço"
     }),
-    number: Joi.string().required().messages({
+    Number: Joi.string().required().messages({
       "any.required": "Por favor, informe o número do endereço"
     }),
-    city: Joi.string().required().messages({
+    City: Joi.string().required().messages({
       "any.required": "Por favor, informe a cidade do endereço"
     }),
     isMain: Joi.boolean().required().messages({

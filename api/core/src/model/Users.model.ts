@@ -78,9 +78,9 @@ export const User = {
           ...data,
           address: {
             create: {
-              Street: data.address.street,
-              Number: data.address.number,
-              City: data.address.city,
+              Street: data.address.Street,
+              Number: data.address.Number,
+              City: data.address.City,
               isMain: data.address.isMain,
               zipCode: data.address.zipCode
             }

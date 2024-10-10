@@ -1,10 +1,11 @@
-export interface Address  {
-  street: string
-  number: string
-  city: string
-  state: string
-  zipCode: string
+export interface Address {
+  id: number
+  Street: string
+  Number: string
+  City: string
   isMain: boolean
+  zipCode: string
+  UserId: number
 }
 
 // types/address.ts
@@ -18,7 +19,7 @@ export interface AddressInput {
 }
 
 export interface AddressUpdate {
-  id?: number 
+  id?: number
   Street?: string;
   Number?: string;
   City?: string;
