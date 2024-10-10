@@ -5,7 +5,7 @@ import { Either, left, right } from "@sweet-monads/either"
 import { StatusCode } from "../helpers/controllerStatusCode"
 
 export const User = {
-  async get(): Promise<Either<BaseError,Omit<userOutput, "password">[]>> {
+  async get(): Promise<Either<BaseError, Omit<userOutput, "password">[]>> {
     try {
       const users = await prisma.user.findMany({
         select: {
@@ -25,15 +25,16 @@ export const User = {
 
   async getOne(id: number): Promise<Either<BaseError, Omit<userOutput, "password"> | null>> {
     try {
-      const user = await prisma.user.findUnique({ where: { id },
-      select:{
-        id: true,
-        name: true,
-        lastname: true,
-        email: true,
-        phone: true,
-        cpforcnpj: true,
-      } })
+      const user = await prisma.user.findUnique({where: { id },
+        select:{
+          id: true,
+          name: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          cpforcnpj: true,
+        }
+      })
       return right(user)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
@@ -42,17 +43,19 @@ export const User = {
 
   async create(data: userInput): Promise<Either<BaseError, Omit<userOutput, "password">>> {
     try {
-      const newUser = await prisma.user.create({ select:{
-        id: true,
-        name: true,
-        lastname: true,
-        email: true,
-        phone: true,
-        cpforcnpj: true,
-      }, data: {
-        ...data
-      
-      } }, 
+      const newUser = await prisma.user.create({
+        select: {
+          id: true,
+          name: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          cpforcnpj: true,
+        }, data: {
+          ...data
+
+        }
+      },
 
       );
       return right(newUser);
@@ -64,25 +67,26 @@ export const User = {
   async createWithAddress(data: userInputWithAddres): Promise<Either<BaseError, Omit<userOutput, "password">>> {
     try {
       const newUser = await prisma.user.create({
-        select:{
-        id: true,
-        name: true,
-        lastname: true,
-        email: true,
-        phone: true,
-        cpforcnpj: true,
-      }, data: {
-        ...data,
-      address: {
-        create: {
-          Street: data.address.street,
-          Number: data.address.number,
-          City: data.address.city,
-          isMain: data.address.isMain,
-          zipCode: data.address.zipCode
+        select: {
+          id: true,
+          name: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          cpforcnpj: true,
+        }, data: {
+          ...data,
+          address: {
+            create: {
+              Street: data.address.street,
+              Number: data.address.number,
+              City: data.address.city,
+              isMain: data.address.isMain,
+              zipCode: data.address.zipCode
+            }
+          }
         }
-      }
-      } }, 
+      },
       );
       console.log("🚀 ~ createWithAddress ~ newUser:", newUser)
       return right(newUser);
@@ -93,16 +97,17 @@ export const User = {
   },
   async update(id: number, data: userInput): Promise<Either<BaseError, Omit<userOutput, "password">>> {
     try {
-      const updatedUser = await prisma.user.update({ where: { id }, select:{
-        id: true,
-        name: true,
-        lastname: true,
-        email: true,
-        phone: true,
-        cpforcnpj: true,
-      }, data
-      } );
-  
+      const updatedUser = await prisma.user.update({
+        where: { id }, select: {
+          id: true,
+          name: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          cpforcnpj: true,
+        }, data
+      });
+
       return right(updatedUser)
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
@@ -134,7 +139,7 @@ export const User = {
     } catch (error) {
       return left(new BaseError("Ocorreu um erro inesperado!"))
     }
-  }, 
+  },
   async login(email: string): Promise<Either<BaseError, UserOutputLogin | null>> {
     try {
       const user = await prisma.user.findFirst({
